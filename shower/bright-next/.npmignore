@@ -1,0 +1,9 @@
+*
+!fonts/**
+!images/**
+!pictures/**
+!styles/screen.css
+!index.html
+!License.md
+!Readme.md
+!package.json
