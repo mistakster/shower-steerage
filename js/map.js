@@ -62,7 +62,16 @@ modules.require(['shower'], function (shower) {
   };
 
   Map.prototype._activate = function () {
-    this._activeMarkerIndex = 0;
+    if (this._activeMarkerIndex) {
+      if (this._activeMarkerIndex < 0) {
+        this._activeMarkerIndex = 0;
+      }
+      if (this._activeMarkerIndex >= this._markers.length) {
+        this._activeMarkerIndex = this._markers.length - 1;
+      }
+    } else {
+      this._activeMarkerIndex = 0;
+    }
     this.showMarker(this._activeMarkerIndex);
   };
 
