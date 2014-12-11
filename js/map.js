@@ -12,7 +12,7 @@ modules.require(['shower'], function (shower) {
 
     shower.getSlidesArray()
       .filter(function (s) {
-        return !!s.getLayout().getElement().getAttribute('data-map');
+        return !!s.getLayout().getData('map');
       })
       .forEach(function (s) {
         maps[s.getId()] = new Map(s);
@@ -36,7 +36,8 @@ modules.require(['shower'], function (shower) {
 
   Map.prototype.init = function(slide) {
 
-    var el = slide.getLayout().getElement();
+    var layout = slide.getLayout();
+    var el = layout.getElement();
     var mapContainer = document.createElement('div');
     mapContainer.className = 'map';
     el.appendChild(mapContainer);
@@ -65,6 +66,10 @@ modules.require(['shower'], function (shower) {
 
       this._markers = markers;
       this._map = map;
+
+      slide.options.steerage = {
+        items: markers
+      };
     }
   };
 
