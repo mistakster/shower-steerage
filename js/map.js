@@ -25,36 +25,40 @@ modules.require(['shower'], function (shower) {
     el.appendChild(mapContainer);
 
     var optionsContainer = el.querySelector('script[type="application/json"]');
-    if (optionsContainer) {
-      var options = JSON.parse(optionsContainer.innerText);
-
-      var markers = options.markers.map(function (m) {
-        return new google.maps.Marker(m);
-      });
-
-      var bounds = new google.maps.LatLngBounds();
-      markers.forEach(function (m) {
-        bounds.extend(m.getPosition());
-      });
-
-      var map = new google.maps.Map(mapContainer, {
-        center: bounds.getCenter(),
-        zoom: 12
-      });
-
-      markers.forEach(function (m) {
-        m.setMap(map);
-      });
-
-      this._markers = markers;
-      this._map = map;
-
-      slide.options.steerage = {
-        activate: this._activate.bind(this),
-        next: this._next.bind(this),
-        prev: this._prev.bind(this)
-      };
+    if (!optionsContainer) {
+      return;
     }
+
+    var options = JSON.parse(optionsContainer.innerText);
+
+    var markers = options.markers.map(function (m) {
+      return new google.maps.Marker(m);
+    });
+
+    var bounds = new google.maps.LatLngBounds();
+    markers.forEach(function (m) {
+      bounds.extend(m.getPosition());
+    });
+
+    var map = new google.maps.Map(mapContainer, {
+      center: bounds.getCenter(),
+      zoom: 12
+    });
+
+    markers.forEach(function (m) {
+      m.setMap(map);
+    });
+
+    this._markers = markers;
+    this._map = map;
+
+    slide.options.steerage = {
+      activate: this._activate.bind(this),
+      next: this._next.bind(this),
+      prev: this._prev.bind(this)
+    };
+
+    shower.plugins.get('shower-steerage').update(slide);
   };
 
   Map.prototype._activate = function () {
