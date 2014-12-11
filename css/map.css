@@ -1,6 +1,10 @@
 section[data-map] {
     padding: 0;
 }
+section[data-map]::after {
+    display: none;
+    content: '';
+}
 
 .map {
     width: 100%;
