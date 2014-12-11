@@ -20,4 +20,11 @@
 	.shower__caption {
 		padding: 48px 0;
 	}
+	section > h2 {
+		font-size: 48px;
+		margin-bottom: 1em;
+	}
+	section > p {
+		margin-bottom: 1em;
+	}
 }
