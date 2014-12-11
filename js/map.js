@@ -2,39 +2,21 @@ modules.require(['shower'], function (shower) {
 
   var initFn = 'steerageExampleInit' + Math.round(1e6 * Math.random());
   window[initFn] = function () {
-    initSlides();
-  };
-
-
-  var maps = {};
-
-  function initSlides() {
-
     shower.getSlidesArray()
       .filter(function (s) {
         return !!s.getLayout().getData('map');
       })
       .forEach(function (s) {
-        maps[s.getId()] = new Map(s);
+        new Map(s);
       });
-
-    shower.player.events.on('activate', function (e) {
-      var slide = e.get('slide');
-      var map = maps[slide.getId()];
-      if (map) {
-        map.first();
-      }
-    });
-
-  }
+  };
 
 
   function Map(slide) {
-    this._slide = slide;
-    this.init(slide);
+    this._init(slide);
   }
 
-  Map.prototype.init = function(slide) {
+  Map.prototype._init = function(slide) {
 
     var layout = slide.getLayout();
     var el = layout.getElement();
@@ -57,7 +39,7 @@ modules.require(['shower'], function (shower) {
 
       var map = new google.maps.Map(mapContainer, {
         center: bounds.getCenter(),
-        zoom: 15
+        zoom: 12
       });
 
       markers.forEach(function (m) {
@@ -68,14 +50,42 @@ modules.require(['shower'], function (shower) {
       this._map = map;
 
       slide.options.steerage = {
-        items: markers
+        activate: this._activate.bind(this),
+        next: this._next.bind(this),
+        prev: this._prev.bind(this)
       };
     }
   };
 
-  Map.prototype.first = function () {
-    var marker = this._markers[0];
-    this._map.panTo(marker.getPosition());
+  Map.prototype._activate = function () {
+    this._activeMarkerIndex = 0;
+    this.showMarker(this._activeMarkerIndex);
+  };
+
+  Map.prototype._next = function () {
+    var result = false;
+    this._activeMarkerIndex++;
+    if (this._activeMarkerIndex >= 0 && this._activeMarkerIndex < this._markers.length) {
+      this.showMarker(this._activeMarkerIndex);
+      result = true;
+    }
+    return result;
+  };
+
+  Map.prototype._prev = function () {
+    var result = false;
+    this._activeMarkerIndex--;
+    if (this._activeMarkerIndex >= 0 && this._activeMarkerIndex < this._markers.length) {
+      this.showMarker(this._activeMarkerIndex);
+      result = true;
+    }
+    return result;
+  };
+
+  Map.prototype.showMarker = function (index) {
+    var marker = this._markers[index];
+    var map = this._map;
+    map.panTo(marker.getPosition());
   };
 
 
